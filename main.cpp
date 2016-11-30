@@ -61,7 +61,7 @@ public:
   }
 
   void update(sf::Time delta) override {
-    rotate(cos(life.getElapsedTime().asSeconds() / (float)weight ));
+    rotate(cos(life.getElapsedTime().asSeconds() * (float)weight ));
     setScale(0.2 + life.getElapsedTime().asSeconds() * (0.01 * weight),
              0.2 + life.getElapsedTime().asSeconds() * (0.01 * weight));
     float fade = 255 - life.getElapsedTime().asSeconds() * weight - 120;
@@ -78,7 +78,7 @@ inline void spawnYeezuses(std::vector<GameObject *> &objects, int amount, sf::Te
   for(int i=0; i<amount; i++) {
     Kanye *go = new Kanye();
     go->loadSprite(texture);
-    go->setVelocity((rand() % 10000) - 5000, (rand() % 10000) - 5000);
+    go->setVelocity((rand() % 5000) - 2500, (rand() % 5000) - 2500);
     objects.push_back(go);
   }
 }
@@ -89,6 +89,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode(900, 550), "slideshooter 0.1");
     sf::Clock deltaClock;
     sf::Clock gameClock;
+    window.setFramerateLimit(60);
 
     std::vector<GameObject *> objects;
 
