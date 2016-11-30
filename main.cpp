@@ -58,10 +58,11 @@ public:
   Kanye() : GameObject() {
     weight = rand() % 255 + 15;
     setPosition(rand() % 850, rand() % 550);
+    update(sf::milliseconds(100));
   }
 
   void update(sf::Time delta) override {
-    rotate(cos(life.getElapsedTime().asSeconds() * (float)weight ));
+    rotate(cos(life.getElapsedTime().asSeconds() / (float)weight * 4 ));
     setScale(0.2 + life.getElapsedTime().asSeconds() * (0.01 * weight),
              0.2 + life.getElapsedTime().asSeconds() * (0.01 * weight));
     float fade = 255 - life.getElapsedTime().asSeconds() * weight - 120;
@@ -122,7 +123,7 @@ int main()
           spawnYeezuses(objects, 2, kanyeTexture);
         }
 
-        window.clear();
+        // window.clear();
 
         for(auto &o : objects) {
           window.draw(*o);
