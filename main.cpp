@@ -3,44 +3,7 @@
 #include <algorithm>
 #include <SFML/Graphics.hpp>
 
-class GameObject : public sf::Sprite {
-public:
-  GameObject() : sf::Sprite() {}
-  virtual ~GameObject() {}
-
-  sf::Vector2f getVelocity() { return m_velocity; }
-  void setVelocity(sf::Vector2f velocity) { m_velocity = velocity; }
-  void setVelocity(float x, float y) { m_velocity = sf::Vector2f(x, y); }
-
-  int loadSprite(std::string location) {
-    if(!m_texture.loadFromFile(location)) return -1;
-    setTexture(m_texture);
-    setOrigin(sf::Vector2f(getTextureRect().width / 2,
-                           getTextureRect().height / 2));
-    return  0;
-  }
-  int loadSprite(sf::Texture &texture) {
-    setTexture(texture);
-    setOrigin(sf::Vector2f(getTextureRect().width / 2,
-                           getTextureRect().height / 2));
-    return  0;
-  }
-
-  void destroy() { m_destroyed = true; }
-  bool isDestroyed() { return m_destroyed; }
-
-  virtual void update(sf::Time) {}
-
-protected:
-  void _update(sf::Time delta) {
-    setPosition(getPosition() + ( getVelocity() * (float)delta.asSeconds() * 8.0f ));
-  }
-
-private:
-  sf::Vector2f m_velocity;
-  sf::Texture  m_texture;
-  bool         m_destroyed = false;
-};
+#include "GameObject.h"
 
 class Player : public GameObject {
 public:
@@ -53,9 +16,9 @@ public:
   }
 };
 
-class Kanye : public GameObject {
+class Particle : public GameObject {
 public:
-  Kanye() : GameObject() {
+  Particle() : GameObject() {
     weight = rand() % 255 + 15;
     rotate(rand() % 360 / 3.14);
     setPosition(rand() % 1200, rand() % 850);
@@ -76,9 +39,9 @@ private:
   int weight;
 };
 
-inline void spawnYeezuses(std::vector<GameObject *> &objects, int amount, sf::Texture& texture) {
+inline void spawnParticles(std::vector<GameObject *> &objects, int amount, sf::Texture& texture) {
   for(int i=0; i<amount; i++) {
-    Kanye *go = new Kanye();
+    Particle *go = new Particle();
     go->loadSprite(texture);
     go->setVelocity((rand() % 5000) - 2500, (rand() % 5000) - 2500);
     objects.push_back(go);
@@ -104,9 +67,9 @@ int main()
     std::vector<GameObject *> objects;
 
     // Test the GameObject.
-    sf::Texture kanyeTexture;
-    kanyeTexture.loadFromFile("test3.png");
-    spawnYeezuses(objects, 50, kanyeTexture);
+    sf::Texture particleTexture;
+    particleTexture.loadFromFile("test3.png");
+    spawnParticles(objects, 50, particleTexture);
 
 
     while (window.isOpen())
@@ -129,7 +92,7 @@ int main()
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-          spawnYeezuses(objects, 1, kanyeTexture);
+          spawnParticles(objects, 1, particleTexture);
         }
 
         // window.clear();
