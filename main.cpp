@@ -57,12 +57,13 @@ class Kanye : public GameObject {
 public:
   Kanye() : GameObject() {
     weight = rand() % 255 + 15;
-    setPosition(rand() % 850, rand() % 550);
-    update(sf::milliseconds(100));
+    rotate(rand() % 360 / 3.14);
+    setPosition(rand() % 1200, rand() % 850);
+    update(sf::milliseconds(10));
   }
 
   void update(sf::Time delta) override {
-    rotate(cos(life.getElapsedTime().asSeconds() / (float)weight * 4 ));
+    rotate(cos(life.getElapsedTime().asSeconds() / (float)weight / 4 ));
     setScale(0.2 + life.getElapsedTime().asSeconds() * (0.01 * weight),
              0.2 + life.getElapsedTime().asSeconds() * (0.01 * weight));
     float fade = 255 - life.getElapsedTime().asSeconds() * weight - 120;
@@ -84,19 +85,27 @@ inline void spawnYeezuses(std::vector<GameObject *> &objects, int amount, sf::Te
   }
 }
 
+inline void psuedoClear(sf::RenderWindow &window, sf::Color color, int opacity) {
+  sf::RectangleShape rectangle;
+  rectangle.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
+  rectangle.setFillColor(sf::Color(color.r,color.g,color.b, opacity));
+  window.draw(rectangle);
+}
+
 int main()
 {
     // TODO: Read config information from a file.
-    sf::RenderWindow window(sf::VideoMode(900, 550), "slideshooter 0.1");
+    sf::RenderWindow window(sf::VideoMode(1200, 850), "slideshooter 0.1");
     sf::Clock deltaClock;
     sf::Clock gameClock;
     window.setFramerateLimit(60);
+    window.clear(sf::Color(255,0,0));
 
     std::vector<GameObject *> objects;
 
     // Test the GameObject.
     sf::Texture kanyeTexture;
-    kanyeTexture.loadFromFile("test.png");
+    kanyeTexture.loadFromFile("test2.png");
     spawnYeezuses(objects, 50, kanyeTexture);
 
 
@@ -124,6 +133,7 @@ int main()
         }
 
         // window.clear();
+        psuedoClear(window, sf::Color(150, 80, 180), 15);
 
         for(auto &o : objects) {
           window.draw(*o);
