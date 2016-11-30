@@ -105,7 +105,7 @@ int main()
 
     // Test the GameObject.
     sf::Texture kanyeTexture;
-    kanyeTexture.loadFromFile("test2.png");
+    kanyeTexture.loadFromFile("test3.png");
     spawnYeezuses(objects, 50, kanyeTexture);
 
 
@@ -129,11 +129,11 @@ int main()
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-          spawnYeezuses(objects, 2, kanyeTexture);
+          spawnYeezuses(objects, 1, kanyeTexture);
         }
 
         // window.clear();
-        psuedoClear(window, sf::Color(150, 80, 180), 15);
+        psuedoClear(window, sf::Color(150, rand() % 255 + 40, 180), 0);
 
         for(auto &o : objects) {
           window.draw(*o);
