@@ -1,3 +1,4 @@
+#pragma once
 inline void spawnParticles(std::vector<GameObject *> &objects, int amount, sf::Texture& texture) {
   for(int i=0; i<amount; i++) {
     Particle *go = new Particle();

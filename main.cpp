@@ -5,6 +5,7 @@
 
 #include "Player.h"
 #include "Particle.h"
+#include "Level.h"
 
 #include "Misc.h"
 
@@ -17,7 +18,8 @@ int main()
     sf::Clock deltaClock;
     sf::Clock gameClock;
     long frameCount = 0;
-    window.setFramerateLimit(60);
+    constexpr float FPS = 60.f;
+    window.setFramerateLimit(FPS);
 
     // Debug implementation of the GameObject system.
     std::vector<GameObject *> objects;
@@ -54,7 +56,8 @@ int main()
                                       objects.end(),
                                       o), objects.end());
           } else {
-            o->update(sf::seconds(1.f / 60.f));
+            // Update at constant rate FPS.
+            o->update(sf::seconds(1.f / FPS));
           }
         }
 
@@ -65,8 +68,8 @@ int main()
           spawnParticles(objects, 1, particleTexture);
         }
 
-        psuedoClear(window, sf::Color(150, rand() % 100 + 40, 180),
-                   (frameCount <= 2) ? 255 : 25);
+        psuedoClear(window, sf::Color(0, 0, 0),
+                   (frameCount <= 2) ? 255 : 35);
         //
         // END Debug.
         //

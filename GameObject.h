@@ -27,6 +27,9 @@ public:
   void destroy() { m_destroyed = true; }
   bool isDestroyed() { return m_destroyed; }
 
+  int getDepth() { return m_depth; }
+  void setDepth(int depth) { m_depth = depth; }
+
   virtual void update(sf::Time) {}
 
 protected:
@@ -37,5 +40,6 @@ protected:
 private:
   sf::Vector2f m_velocity;
   sf::Texture  m_texture;
+  int          m_depth = 0;
   bool         m_destroyed = false;
 };
