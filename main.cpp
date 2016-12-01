@@ -61,19 +61,18 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1200, 850), "slideshooter 0.1");
     sf::Clock deltaClock;
     sf::Clock gameClock;
+    long frameCount;
     window.setFramerateLimit(60);
-    window.clear(sf::Color(255,0,0));
 
     std::vector<GameObject *> objects;
 
     // Test the GameObject.
     sf::Texture particleTexture;
     particleTexture.loadFromFile("test3.png");
-    spawnParticles(objects, 50, particleTexture);
-
 
     while (window.isOpen())
     {
+        frameCount++;
         deltaClock.restart();
         sf::Event event;
         while (window.pollEvent(event))
@@ -83,12 +82,13 @@ int main()
         }
 
         for(auto &o : objects) {
-          if(o->isDestroyed())
+          if(o->isDestroyed()) {
             objects.erase(std::remove(objects.begin(),
                                       objects.end(),
                                       o), objects.end());
-          else
+          } else {
             o->update(deltaClock.getElapsedTime());
+          }
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
@@ -96,7 +96,7 @@ int main()
         }
 
         // window.clear();
-        psuedoClear(window, sf::Color(150, rand() % 255 + 40, 180), 0);
+        psuedoClear(window, sf::Color(150, rand() % 100 + 40, 180), 15);
 
         for(auto &o : objects) {
           window.draw(*o);
