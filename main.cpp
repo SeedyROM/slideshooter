@@ -5,7 +5,7 @@
 
 #include "GameState.h"
 #include "Player.h"
-#include "Particle.h"
+#include "Cloud.h"
 #include "Level.h"
 
 #include "Misc.h"
@@ -17,6 +17,7 @@ int main()
     // Window state and timers.
 
     GSInit(1000, 600, "Testing!");
+    window.setVerticalSyncEnabled(true);
 
     // Test the GameObject.
     sf::Texture particleTexture;
@@ -27,9 +28,9 @@ int main()
     Player *p1 = new Player();
     p1->setTextureRect(sf::IntRect(96*3, 0, 96, 96));
     p1->loadSprite("ship.png");
-    p1->setPosition(200, 100);
-    p1->setVelocity(5, 2);
-    level.addToQueue(7, p1);
+    p1->setScale(0.75, 0.75);
+    p1->setPosition(100, GSGetWindowSize.y/2);
+    level.addToQueue(10, p1);
 
     // Game loop...
     while (window.isOpen())
@@ -65,11 +66,18 @@ int main()
         }
         */
 
-        psuedoClear(window, sf::Color(0, 0, 0),
-                   (GSGetTime.asMilliseconds() <= 500) ? 255 : 75);
+        psuedoClear(window, sf::Color(94, 152, 171),
+                   (GSGetTime.asMilliseconds() <= 500) ? 255 : 95);
+
+        if(GSGetTime.asMilliseconds() % 8 == 0 ) {
+          Cloud *c = new Cloud();
+          c->loadSprite(particleTexture);
+          level.addToQueue(rand() % 6 + 5, c);
+        }
 
         level.update(sf::seconds(1.f / GSGetMaxFPS));
         level.draw(window);
+
         window.display();
     }
 

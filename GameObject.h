@@ -34,7 +34,8 @@ public:
 
 protected:
   void _update(sf::Time delta) {
-    setPosition(getPosition() + ( getVelocity() * (float)delta.asSeconds() * 8.0f ));
+    setPosition(getPosition() + getVelocity() * (float)delta.asSeconds() * 8.0f );
+    //setPosition(getPosition().x + getVelocity().x * delta.asSeconds(), getPosition().y + getVelocity().y * delta.asSeconds());
   }
 
 private:

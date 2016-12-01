@@ -20,3 +20,7 @@ inline void psuedoClear(sf::RenderWindow &window, sf::Color color, int opacity) 
 inline float clamp(float n, float lower, float upper) {
   return std::max(lower, std::min(n, upper));
 }
+
+inline float randFloat() {
+  return ((float) rand() / (RAND_MAX)) + 1;
+}

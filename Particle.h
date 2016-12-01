@@ -12,7 +12,7 @@ public:
     update(sf::milliseconds(10));
   }
 
-  void update(sf::Time delta) override {
+  void update(sf::Time delta) {
     rotate(cos(life.getElapsedTime().asSeconds() / (float)weight / 4 ));
     setScale(0.2 + life.getElapsedTime().asSeconds() * (0.03 * weight),
              0.2 + life.getElapsedTime().asSeconds() * (0.03 * weight));
