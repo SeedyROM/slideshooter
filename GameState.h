@@ -25,13 +25,14 @@ public:
   sf::Clock *deltaClock;
   sf::Clock *gameClock;
   long *frameCount;
-  static constexpr float FPS = 60.f;
+  static constexpr float maxFPS = 60.f;
 
   void setup(sf::RenderWindow *_window, sf::Clock *_deltaClock,
-             sf::Clock *_gameClock, long *_frameCount) {
+             sf::Clock *_gameClock) {
     window = _window;
     deltaClock = _deltaClock;
-    window->setFramerateLimit(FPS);
+    gameClock = _gameClock;
+    window->setFramerateLimit(maxFPS);
   }
 
   static GameState& getInstance()
@@ -46,3 +47,14 @@ public:
 };
 
 GameState * GameState::pInstance = nullptr;
+
+#define GS GameState::getInstance()
+#define GSInit(width, height, default_title)  \
+    sf::RenderWindow window(sf::VideoMode(width, height), default_title); \
+    sf::Clock deltaClock; \
+    sf::Clock gameClock; \
+    GSSetup((&window, &deltaClock, &gameClock));
+#define GSSetup(ARGS) GS.setup ARGS
+#define GSGetTime GS.gameClock->getElapsedTime()
+#define GSGetWindowSize GS.window->getSize()
+#define GSGetMaxFPS GS.maxFPS

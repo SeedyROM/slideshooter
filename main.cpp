@@ -16,12 +16,7 @@ int main()
 
     // Window state and timers.
 
-    sf::RenderWindow window(sf::VideoMode(800, 450), "slideshooter 0.1");
-    sf::Clock deltaClock;
-    sf::Clock gameClock;
-    long frameCount = 0;
-    constexpr static float FPS = 60.f;
-    GameState::getInstance().setup(&window, &deltaClock, &gameClock, &frameCount);
+    GSInit(1000, 500, "Testing!");
 
     // Test the GameObject.
     sf::Texture particleTexture;
@@ -43,7 +38,6 @@ int main()
     while (window.isOpen())
     {
         // Handle timers.
-        frameCount++;
         deltaClock.restart();
 
         // Check for window events.
@@ -61,7 +55,7 @@ int main()
         }
 
         //
-        // BEGIN Debug.
+        // Debug.
         //
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
           for(int i=0; i<1; i++) {
@@ -73,9 +67,9 @@ int main()
         }
 
         psuedoClear(window, sf::Color(0, 0, 0),
-                   (frameCount <= 2) ? 255 : 35);
+                   (GSGetTime.asMilliseconds() <= 500) ? 255 : 35);
 
-        l.update(sf::seconds(1.f / FPS));
+        l.update(sf::seconds(1.f / GSGetMaxFPS));
 
         l.draw(window);
 
