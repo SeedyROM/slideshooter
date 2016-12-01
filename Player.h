@@ -35,7 +35,8 @@ public:
     }
 
     // Keep our player in the correction portion of the screen.
-    setPosition(clamp(getPosition().x, 0, GSGetWindowSize.x - 80), clamp(getPosition().y, 0, GSGetWindowSize.y));
+    setPosition(clamp(getPosition().x, getGlobalBounds().width / 2, GSGetWindowSize.x - 80), clamp(getPosition().y,
+                      getGlobalBounds().width / 2, GSGetWindowSize.y - (getGlobalBounds().height / 2)));
 
     _update(delta); // Apply world velocity.
   }
