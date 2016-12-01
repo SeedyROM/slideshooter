@@ -16,7 +16,7 @@ int main()
 
     // Window state and timers.
 
-    GSInit(1000, 500, "Testing!");
+    GSInit(1000, 600, "Testing!");
 
     // Test the GameObject.
     sf::Texture particleTexture;
