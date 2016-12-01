@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <SFML/Graphics.hpp>
 
+#include "GameState.h"
 #include "Player.h"
 #include "Particle.h"
 #include "Level.h"
@@ -14,15 +15,13 @@ int main()
     // TODO: Read config information from a file.
 
     // Window state and timers.
+
     sf::RenderWindow window(sf::VideoMode(800, 450), "slideshooter 0.1");
     sf::Clock deltaClock;
     sf::Clock gameClock;
     long frameCount = 0;
-    constexpr float FPS = 60.f;
-    window.setFramerateLimit(FPS);
-
-    // Debug implementation of the GameObject system.
-    std::vector<GameObject *> objects;
+    constexpr static float FPS = 60.f;
+    GameState::getInstance().setup(&window, &deltaClock, &gameClock, &frameCount);
 
     // Test the GameObject.
     sf::Texture particleTexture;
@@ -61,18 +60,6 @@ int main()
           window.close();
         }
 
-        // Handle updating and destroying GameObjects.
-        /*for(auto &o : objects) {
-          if(o->isDestroyed()) {
-            objects.erase(std::remove(objects.begin(),
-                                      objects.end(),
-                                      o), objects.end());
-          } else {
-            // Update at constant rate FPS.
-            o->update(sf::seconds(1.f / FPS));
-          }
-        }*/
-
         //
         // BEGIN Debug.
         //
@@ -87,15 +74,9 @@ int main()
 
         psuedoClear(window, sf::Color(0, 0, 0),
                    (frameCount <= 2) ? 255 : 35);
-        //
-        // END Debug.
-        //
 
-        // Now draw the objects.
-        //for(auto &o : objects) {
-        //  window.draw(*o);
-        //}
         l.update(sf::seconds(1.f / FPS));
+
         l.draw(window);
 
         window.display();

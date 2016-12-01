@@ -1,4 +1,5 @@
 #pragma once
+#include "GameState.h"
 #include "GameObject.h"
 
 class Particle : public GameObject {
@@ -6,7 +7,8 @@ public:
   Particle() : GameObject() {
     weight = rand() % 255 + 15;
     rotate(rand() % 360 / 3.14);
-    setPosition(rand() % 400 + 200, rand() % 200 + 100);
+    setPosition(rand() % GameState::getInstance().window->getSize().x,
+                rand() % GameState::getInstance().window->getSize().y);
     update(sf::milliseconds(10));
   }
 
