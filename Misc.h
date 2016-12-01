@@ -1,4 +1,6 @@
 #pragma once
+#include "Particle.h"
+
 inline void spawnParticles(std::vector<GameObject *> &objects, int amount, sf::Texture& texture) {
   for(int i=0; i<amount; i++) {
     Particle *go = new Particle();
@@ -13,4 +15,8 @@ inline void psuedoClear(sf::RenderWindow &window, sf::Color color, int opacity) 
   rectangle.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
   rectangle.setFillColor(sf::Color(color.r,color.g,color.b, opacity));
   window.draw(rectangle);
+}
+
+inline float clamp(float n, float lower, float upper) {
+  return std::max(lower, std::min(n, upper));
 }

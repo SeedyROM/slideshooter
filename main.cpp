@@ -23,16 +23,13 @@ int main()
     particleTexture.loadFromFile("cloud.png");
 
     // Debug level.
-    Level l;
+    Level level;
     Player *p1 = new Player();
-    p1->loadSprite("test3.png");
+    p1->setTextureRect(sf::IntRect(96*3, 0, 96, 96));
+    p1->loadSprite("ship.png");
     p1->setPosition(200, 100);
     p1->setVelocity(5, 2);
-    l.addToQueue(7, p1);
-    Player *p2 = new Player();
-    p2->loadSprite("test.png");
-    p2->setVelocity(3, 5);
-    l.addToQueue(5, p2);
+    level.addToQueue(7, p1);
 
     // Game loop...
     while (window.isOpen())
@@ -57,6 +54,7 @@ int main()
         //
         // Debug.
         //
+        /*
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
           for(int i=0; i<1; i++) {
             Particle *go = new Particle();
@@ -65,14 +63,13 @@ int main()
             l.addToQueue(rand() % 20 + 6, go);
           }
         }
+        */
 
         psuedoClear(window, sf::Color(0, 0, 0),
-                   (GSGetTime.asMilliseconds() <= 500) ? 255 : 35);
+                   (GSGetTime.asMilliseconds() <= 500) ? 255 : 75);
 
-        l.update(sf::seconds(1.f / GSGetMaxFPS));
-
-        l.draw(window);
-
+        level.update(sf::seconds(1.f / GSGetMaxFPS));
+        level.draw(window);
         window.display();
     }
 
