@@ -71,8 +71,8 @@ public:
   }
 
   void draw(sf::RenderWindow &window) {
-    if(m_timeSinceStart.getElapsedTime().asMilliseconds() % 250 == 0) preenQueue();
-    sortQueue();
+    //if(m_timeSinceStart.getElapsedTime().asMilliseconds() % 2000 == 0) preenQueue();
+    //sortQueue();
     for(auto &q : m_subQueues) {
       //std::cout << "SubQueue at depth " << q->getDepth() << std::endl;
       q->draw(window);

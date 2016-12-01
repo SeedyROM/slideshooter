@@ -24,13 +24,15 @@ int main()
     particleTexture.loadFromFile("cloud.png");
 
     // Debug level.
-    Level level;
+    Level *level = new Level();
+    GSSetCurrentLevel(level);
+
     Player *p1 = new Player();
     p1->setTextureRect(sf::IntRect(96*3, 0, 96, 96));
     p1->loadSprite("ship.png");
     p1->setScale(0.75, 0.75);
     p1->setPosition(100, GSGetWindowSize.y/2);
-    level.addToQueue(10, p1);
+    level->addToQueue(10, p1);
 
     // Game loop...
     while (window.isOpen())
@@ -67,16 +69,16 @@ int main()
         */
 
         psuedoClear(window, sf::Color(94, 152, 171),
-                   (GSGetTime.asMilliseconds() <= 500) ? 255 : 95);
+                   (GSGetTime.asMilliseconds() <= 500) ? 255 : 105);
 
         if(GSGetTime.asMilliseconds() % 8 == 0 ) {
           Cloud *c = new Cloud();
           c->loadSprite(particleTexture);
-          level.addToQueue(rand() % 6 + 5, c);
+          level->addToQueue(rand() % 6 + 5, c);
         }
 
-        level.update(sf::seconds(1.f / GSGetMaxFPS));
-        level.draw(window);
+        GSGetCurrentLevel->update(sf::seconds(1.f / GSGetMaxFPS));
+        GSGetCurrentLevel->draw(window);
 
         window.display();
     }
