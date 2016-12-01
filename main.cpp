@@ -26,18 +26,18 @@ int main()
 
     // Test the GameObject.
     sf::Texture particleTexture;
-    particleTexture.loadFromFile("test3.png");
+    particleTexture.loadFromFile("cloud.png");
 
     // Debug level.
     Level l;
     Player *p1 = new Player();
     p1->loadSprite("test3.png");
     p1->setPosition(200, 100);
-    p1->setVelocity(20, 50);
+    p1->setVelocity(5, 2);
     l.addToQueue(7, p1);
     Player *p2 = new Player();
     p2->loadSprite("test.png");
-    p2->setVelocity(30, 50);
+    p2->setVelocity(3, 5);
     l.addToQueue(5, p2);
 
     // Game loop...
@@ -77,11 +77,11 @@ int main()
         // BEGIN Debug.
         //
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-          for(int i=0; i<2; i++) {
+          for(int i=0; i<1; i++) {
             Particle *go = new Particle();
             go->loadSprite(particleTexture);
             go->setVelocity((rand() % 100) - 50, (rand() % 100) - 50);
-            l.addToQueue(rand() % 8, go);
+            l.addToQueue(rand() % 20 + 6, go);
           }
         }
 

@@ -71,7 +71,8 @@ public:
   }
 
   void draw(sf::RenderWindow &window) {
-    sortAndPreenQueue();
+    if(m_timeSinceStart.getElapsedTime().asMilliseconds() % 250 == 0) preenQueue();
+    sortQueue();
     for(auto &q : m_subQueues) {
       //std::cout << "SubQueue at depth " << q->getDepth() << std::endl;
       q->draw(window);
@@ -80,6 +81,7 @@ public:
 
   void addToQueue(RenderSubQueue *renderSubQueue) {
     m_subQueues.push_back(renderSubQueue);
+    sortQueue();
   }
   void addToQueue(int depth, GameObject *gameObject) {
     if(m_subQueues.empty()) {
@@ -101,17 +103,22 @@ public:
         //std::cout << "Adding a new sub queue..." << std::endl;
       }
     }
+    sortQueue();
   }
 
 private:
   std::vector<RenderSubQueue *> m_subQueues;
+  sf::Clock m_timeSinceStart;
 
-  void sortAndPreenQueue() {
+  void sortQueue() {
     sort(m_subQueues.begin(), m_subQueues.end(),
         [](RenderSubQueue *a, RenderSubQueue *b) -> bool
     {
         return a->getDepth() < b->getDepth();
     });
+  }
+
+  void preenQueue() {
     m_subQueues.erase(
       std::remove_if(m_subQueues.begin(), m_subQueues.end(),
       [](RenderSubQueue *a) -> bool {
