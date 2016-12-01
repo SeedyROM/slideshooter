@@ -28,6 +28,18 @@ int main()
     sf::Texture particleTexture;
     particleTexture.loadFromFile("test3.png");
 
+    // Debug level.
+    Level l;
+    Player *p1 = new Player();
+    p1->loadSprite("test3.png");
+    p1->setPosition(200, 100);
+    p1->setVelocity(20, 50);
+    l.addToQueue(7, p1);
+    Player *p2 = new Player();
+    p2->loadSprite("test.png");
+    p2->setVelocity(30, 50);
+    l.addToQueue(5, p2);
+
     // Game loop...
     while (window.isOpen())
     {
@@ -50,7 +62,7 @@ int main()
         }
 
         // Handle updating and destroying GameObjects.
-        for(auto &o : objects) {
+        /*for(auto &o : objects) {
           if(o->isDestroyed()) {
             objects.erase(std::remove(objects.begin(),
                                       objects.end(),
@@ -59,13 +71,18 @@ int main()
             // Update at constant rate FPS.
             o->update(sf::seconds(1.f / FPS));
           }
-        }
+        }*/
 
         //
         // BEGIN Debug.
         //
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-          spawnParticles(objects, 1, particleTexture);
+          for(int i=0; i<2; i++) {
+            Particle *go = new Particle();
+            go->loadSprite(particleTexture);
+            go->setVelocity((rand() % 100) - 50, (rand() % 100) - 50);
+            l.addToQueue(rand() % 8, go);
+          }
         }
 
         psuedoClear(window, sf::Color(0, 0, 0),
@@ -75,9 +92,12 @@ int main()
         //
 
         // Now draw the objects.
-        for(auto &o : objects) {
-          window.draw(*o);
-        }
+        //for(auto &o : objects) {
+        //  window.draw(*o);
+        //}
+        l.update(sf::seconds(1.f / FPS));
+        l.draw(window);
+
         window.display();
     }
 
