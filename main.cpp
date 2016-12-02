@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "GameState.h"
+
 #include "Player.h"
 #include "Cloud.h"
 #include "Stage.h"
@@ -32,7 +33,7 @@ int main()
     p1->loadSprite("ship.png");
     p1->setScale(0.75, 0.75);
     p1->setPosition(100, GSGetWindowSize.y/2);
-    level->addToQueue(10, p1);
+    level->addObjectToStage(5, p1);
 
     // Game loop...
     while (window.isOpen())
@@ -74,10 +75,10 @@ int main()
         if(GSGetTime.asMilliseconds() % 8 == 0 ) {
           Cloud *c = new Cloud();
           c->loadSprite(particleTexture);
-          level->addToQueue(rand() % 6 + 5, c);
+          level->addObjectToStage(rand() % 6 + 5, c);
         }
 
-        GSGetCurrentStage->update(sf::seconds(1.f / GSGetMaxFPS));
+        //GSGetCurrentStage->update(sf::seconds(1.f / GSGetMaxFPS));
         GSGetCurrentStage->draw(window);
 
         window.display();

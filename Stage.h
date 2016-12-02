@@ -1,130 +1,102 @@
 #pragma once
+#include <functional>
+#include <queue>
 #include <vector>
+#include <algorithm>
+#include <iostream>
 
 #include "GameObject.h"
 
-class RenderSubQueue {
+struct CompareGameObjectDepth : std::binary_function<GameObject*, GameObject*, bool> {
+  bool operator()(GameObject *lhs, GameObject *rhs) const {
+    return lhs->getDepth() > rhs->getDepth();
+  }
+};
+typedef std::priority_queue<GameObject, std::vector<GameObject *>, CompareGameObjectDepth> ObjectDepthPriorityQueue;
+
+class RenderQueue {
 public:
-  RenderSubQueue(int depth) {
+  RenderQueue() {}
+  RenderQueue(int depth) {
     m_depth = depth;
-  }
-  virtual ~RenderSubQueue() {
-    for(auto &o : m_renderQueue) {
-      delete o;
-    }
-  }
 
-  int  getDepth()          {  return m_depth; }
-  void setDepth(int depth) { m_depth = depth; }
-  bool empty() { return m_renderQueue.empty(); }
-
-  void update(sf::Time delta) {
-    for(auto &o : m_renderQueue) {
-      if(o->isDestroyed()) {
-        m_renderQueue.erase(std::remove(m_renderQueue.begin(),
-                                        m_renderQueue.end(),
-                                        o), m_renderQueue.end());
-      } else {
-        // Update at constant rate FPS.
-        o->update(delta);
-      }
-    }
+    std::cout << "new RenderQueue...\n";
   }
+  ~RenderQueue() {}
+
+  void update(sf::Time delta) {}
 
   void draw(sf::RenderWindow &window) {
-    sortQueue();
-    for(auto &o : m_renderQueue) {
-      window.draw(*o);
+    ObjectDepthPriorityQueue queue(m_objectQueue);
+    while(!queue.empty()) {
+      // TODO: Remove this bullshit.
+      queue.top()->update(sf::seconds(1.f / GSGetMaxFPS));
+      // END BULLSHIT
+      window.draw(*queue.top());
+      queue.pop();
     }
   }
 
   void addToQueue(GameObject *gameObject) {
-    m_renderQueue.push_back(gameObject);
+    m_objectQueue.push(gameObject);
   }
 
+  int getDepth() const { return m_depth; }
+  void setDepth(int depth) { m_depth = depth; }
 private:
-  int m_depth;
-  std::vector<GameObject *> m_renderQueue;
+  int m_depth = 0;
 
-  void sortQueue() {
-    sort(m_renderQueue.begin(), m_renderQueue.end(),
-        [](GameObject *a, GameObject *b) -> bool
-    {
-        return a->getDepth() < b->getDepth();
-    });
+  ObjectDepthPriorityQueue m_objectQueue;
+};
+
+struct CompareRenderQueueDepth : std::binary_function<RenderQueue*, RenderQueue*, bool> {
+  bool operator()(RenderQueue *lhs, RenderQueue *rhs) const {
+    return lhs->getDepth() > rhs->getDepth();
   }
 };
+typedef std::priority_queue<RenderQueue, std::vector<RenderQueue *>, CompareRenderQueueDepth> RenderPriorityQueue;
 
 class Stage {
 public:
-  Stage() {}
-  virtual ~Stage() {
-    for(auto &q : m_subQueues) {
-      delete q;
-    }
-  }
-
-  void update(sf::Time delta) {
-    for(auto &q : m_subQueues) {
-      q->update(delta);
-    }
-  }
+  Stage() { }
+  virtual ~Stage() {}
 
   void draw(sf::RenderWindow &window) {
-    //if(m_timeSinceStart.getElapsedTime().asMilliseconds() % 2000 == 0) preenQueue();
-    //sortQueue();
-    for(auto &q : m_subQueues) {
-      //std::cout << "SubQueue at depth " << q->getDepth() << std::endl;
-      q->draw(window);
+    RenderPriorityQueue queue(m_renderQueues);
+    while(!queue.empty()) {
+      queue.top()->draw(window);
+      queue.pop();
     }
   }
 
-  void addToQueue(RenderSubQueue *renderSubQueue) {
-    m_subQueues.push_back(renderSubQueue);
-    sortQueue();
+  void addRenderQueue(RenderQueue *renderQueue) {
+    m_renderQueues.push(renderQueue);
   }
-  void addToQueue(int depth, GameObject *gameObject) {
-    if(m_subQueues.empty()) {
-      m_subQueues.push_back(new RenderSubQueue(depth));
-      m_subQueues.back()->addToQueue(gameObject);
-      //std::cout << "Adding new sub queue..." << std::endl;
-    } else {
-      auto foundQueue = std::find_if(m_subQueues.begin(), m_subQueues.end(),
-                                    [&depth](RenderSubQueue *q)
-                                    {
-                                      return q->getDepth() == depth;
-                                    });
-      if(foundQueue != m_subQueues.end()) {
-        //std::cout << &gameObject << std::endl;
-        (*foundQueue)->addToQueue(gameObject);
+
+  void addObjectToStage(int depth, GameObject *gameObject) {
+    // If there are no render queues make one!
+    if(m_renderQueues.empty()) {
+      RenderQueue *queue = new RenderQueue(depth);
+      queue->addToQueue(gameObject);
+      m_renderQueues.push(queue);
+      return;
+    }
+    // Add to existing queue..
+    RenderPriorityQueue queues(m_renderQueues);
+    while(!queues.empty()) {
+      if(queues.top()->getDepth() == depth) {
+        queues.top()->addToQueue(gameObject);
+        return;
       } else {
-        m_subQueues.push_back(new RenderSubQueue(depth));
-        m_subQueues.front()->addToQueue(gameObject);
-        //std::cout << "Adding a new sub queue..." << std::endl;
+        queues.pop();
       }
     }
-    sortQueue();
+    // Or create a new queue at depth
+    RenderQueue *queue = new RenderQueue(depth);
+    queue->addToQueue(gameObject);
+    m_renderQueues.push(queue);
   }
 
 private:
-  std::vector<RenderSubQueue *> m_subQueues;
-  sf::Clock m_timeSinceStart;
-
-  void sortQueue() {
-    sort(m_subQueues.begin(), m_subQueues.end(),
-        [](RenderSubQueue *a, RenderSubQueue *b) -> bool
-    {
-        return a->getDepth() < b->getDepth();
-    });
-  }
-
-  void preenQueue() {
-    m_subQueues.erase(
-      std::remove_if(m_subQueues.begin(), m_subQueues.end(),
-      [](RenderSubQueue *a) -> bool {
-        return a->empty();
-      }),
-      m_subQueues.end()
-    );
-  }
+  RenderPriorityQueue m_renderQueues;
 };

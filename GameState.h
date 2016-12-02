@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Stage.h"
 
+class Stage;
 class GameState
 {
   static GameState * pInstance;
