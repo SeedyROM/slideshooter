@@ -12,7 +12,7 @@ struct CompareGameObjectDepth : std::binary_function<GameObject*, GameObject*, b
     return lhs->getDepth() > rhs->getDepth();
   }
 };
-typedef std::priority_queue<GameObject, std::vector<GameObject *>, CompareGameObjectDepth> ObjectDepthPriorityQueue;
+typedef std::priority_queue<GameObject, std::deque<GameObject *>, CompareGameObjectDepth> ObjectDepthPriorityQueue;
 
 class RenderQueue {
 public:
@@ -27,18 +27,18 @@ public:
   void update(sf::Time delta) {}
 
   void draw(sf::RenderWindow &window) {
-    ObjectDepthPriorityQueue queue(m_objectQueue);
-    while(!queue.empty()) {
-      // TODO: Remove this bullshit.
-      queue.top()->update(sf::seconds(1.f / GSGetMaxFPS));
-      // END BULLSHIT
-      window.draw(*queue.top());
-      queue.pop();
+    for(auto &o : m_objectQueue) {
+      if(o->isDestroyed()) {
+        auto i = &o - &m_objectQueue[0];
+        m_objectQueue.erase(m_objectQueue.begin() + i);
+      }
+      o->update(sf::seconds(1.f / GSGetMaxFPS)); // FIX THIS
+      window.draw(*o);
     }
   }
 
   void addToQueue(GameObject *gameObject) {
-    m_objectQueue.push(gameObject);
+    m_objectQueue.push_back(gameObject);
   }
 
   int getDepth() const { return m_depth; }
@@ -46,7 +46,7 @@ public:
 private:
   int m_depth = 0;
 
-  ObjectDepthPriorityQueue m_objectQueue;
+  std::vector<GameObject *> m_objectQueue;
 };
 
 struct CompareRenderQueueDepth : std::binary_function<RenderQueue*, RenderQueue*, bool> {
@@ -54,7 +54,7 @@ struct CompareRenderQueueDepth : std::binary_function<RenderQueue*, RenderQueue*
     return lhs->getDepth() > rhs->getDepth();
   }
 };
-typedef std::priority_queue<RenderQueue, std::vector<RenderQueue *>, CompareRenderQueueDepth> RenderPriorityQueue;
+typedef std::priority_queue<RenderQueue, std::deque<RenderQueue *>, CompareRenderQueueDepth> RenderPriorityQueue;
 
 class Stage {
 public:
@@ -79,19 +79,19 @@ public:
       RenderQueue *queue = new RenderQueue(depth);
       queue->addToQueue(gameObject);
       m_renderQueues.push(queue);
-      return;
+      return; // Escape!
     }
     // Add to existing queue..
     RenderPriorityQueue queues(m_renderQueues);
     while(!queues.empty()) {
       if(queues.top()->getDepth() == depth) {
         queues.top()->addToQueue(gameObject);
-        return;
+        return; // Exit because we've found our match.
       } else {
         queues.pop();
       }
     }
-    // Or create a new queue at depth
+    // Or create a new queue at depth.
     RenderQueue *queue = new RenderQueue(depth);
     queue->addToQueue(gameObject);
     m_renderQueues.push(queue);
