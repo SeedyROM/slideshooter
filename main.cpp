@@ -10,6 +10,7 @@
 #include "Cloud.h"
 
 #include "Engine/Helpers/Misc.h"
+#include "Engine/GUI/Menu.h"
 
 int main()
 {
@@ -34,6 +35,18 @@ int main()
     p1->setScale(0.75, 0.75);
     p1->setPosition(100, GSGetWindowSize.y/2);
     level->addObjectToStage(5, p1);
+
+    // Debug Menu
+    // Holy fuck this worked on the first try.
+    MenuItem i1("Fuck", []() {
+      std::cout << "I've been acted upon!\n";
+    });
+    MenuItem i2("Ass", []() {
+      std::cout << "I've also been seen!\n";
+    });
+    Menu m;
+    m.addMenuItem(i1);
+    m.addMenuItem(i2);
 
     // Game loop...
     while (window.isOpen())
@@ -68,7 +81,7 @@ int main()
           }
         }
         */
-        
+
         psuedoClear(window, sf::Color(94, 152, 171),
                    (GSGetTime.asMilliseconds() <= 500) ? 255 : 160);
 
