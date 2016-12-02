@@ -5,7 +5,7 @@
 
 class Player : public GameObject {
 public:
-  float movementSpeed = 80;
+  float movementSpeed = 50;
   float acceleration = 6;
   float damping = 0.93;
 
