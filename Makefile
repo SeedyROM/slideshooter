@@ -1,5 +1,5 @@
 CC= g++
-FLAGS= -Wall -std=c++11
+FLAGS= -Wall -O3 -std=c++11
 SFML_LIBS= -lsfml-window -lsfml-graphics -lsfml-system
 EXEC_NAME= slideshooter
 

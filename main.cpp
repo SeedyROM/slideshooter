@@ -3,131 +3,83 @@
 #include <algorithm>
 #include <SFML/Graphics.hpp>
 
-class GameObject : public sf::Sprite {
-public:
-  GameObject() : sf::Sprite() {}
-  virtual ~GameObject() {}
+#include "GameState.h"
+#include "Player.h"
+#include "Cloud.h"
+#include "Stage.h"
 
-  sf::Vector2f getVelocity() { return m_velocity; }
-  void setVelocity(sf::Vector2f velocity) { m_velocity = velocity; }
-  void setVelocity(float x, float y) { m_velocity = sf::Vector2f(x, y); }
-
-  int loadSprite(std::string location) {
-    if(!m_texture.loadFromFile(location)) return -1;
-    setTexture(m_texture);
-    setOrigin(sf::Vector2f(getTextureRect().width / 2,
-                           getTextureRect().height / 2));
-    return  0;
-  }
-  int loadSprite(sf::Texture &texture) {
-    setTexture(texture);
-    setOrigin(sf::Vector2f(getTextureRect().width / 2,
-                           getTextureRect().height / 2));
-    return  0;
-  }
-
-  void destroy() { m_destroyed = true; }
-  bool isDestroyed() { return m_destroyed; }
-
-  virtual void update(sf::Time) {}
-
-protected:
-  void _update(sf::Time delta) {
-    setPosition(getPosition() + ( getVelocity() * (float)delta.asSeconds() * 8.0f ));
-  }
-
-private:
-  sf::Vector2f m_velocity;
-  sf::Texture  m_texture;
-  bool         m_destroyed = false;
-};
-
-class Player : public GameObject {
-public:
-  void update(sf::Time delta) {
-    //
-    // TODO:
-    // Custom behaviour here!
-    //
-    _update(delta); // Apply world velocity.
-  }
-};
-
-class Kanye : public GameObject {
-public:
-  Kanye() : GameObject() {
-    weight = rand() % 255 + 15;
-    setPosition(rand() % 850, rand() % 550);
-    update(sf::milliseconds(100));
-  }
-
-  void update(sf::Time delta) override {
-    rotate(cos(life.getElapsedTime().asSeconds() / (float)weight * 4 ));
-    setScale(0.2 + life.getElapsedTime().asSeconds() * (0.01 * weight),
-             0.2 + life.getElapsedTime().asSeconds() * (0.01 * weight));
-    float fade = 255 - life.getElapsedTime().asSeconds() * weight - 120;
-    if(fade <= 0) destroy();
-    setColor(sf::Color(255, 255, 255, (fade <= 0) ? 0 : fade ));
-    _update(delta);
-  }
-private:
-  sf::Clock life;
-  int weight;
-};
-
-inline void spawnYeezuses(std::vector<GameObject *> &objects, int amount, sf::Texture& texture) {
-  for(int i=0; i<amount; i++) {
-    Kanye *go = new Kanye();
-    go->loadSprite(texture);
-    go->setVelocity((rand() % 5000) - 2500, (rand() % 5000) - 2500);
-    objects.push_back(go);
-  }
-}
+#include "Misc.h"
 
 int main()
 {
     // TODO: Read config information from a file.
-    sf::RenderWindow window(sf::VideoMode(900, 550), "slideshooter 0.1");
-    sf::Clock deltaClock;
-    sf::Clock gameClock;
-    window.setFramerateLimit(60);
 
-    std::vector<GameObject *> objects;
+    // Window state and timers.
+
+    GSInit(1000, 600, "Testing!");
+    window.setVerticalSyncEnabled(true);
 
     // Test the GameObject.
-    sf::Texture kanyeTexture;
-    kanyeTexture.loadFromFile("test.png");
-    spawnYeezuses(objects, 50, kanyeTexture);
+    sf::Texture particleTexture;
+    particleTexture.loadFromFile("cloud.png");
 
+    // Debug level.
+    Stage *level = new Stage();
+    GSSetCurrentStage(level);
 
+    Player *p1 = new Player();
+    p1->setTextureRect(sf::IntRect(96*3, 0, 96, 96));
+    p1->loadSprite("ship.png");
+    p1->setScale(0.75, 0.75);
+    p1->setPosition(100, GSGetWindowSize.y/2);
+    level->addToQueue(10, p1);
+
+    // Game loop...
     while (window.isOpen())
     {
+        // Handle timers.
         deltaClock.restart();
+
+        // Check for window events.
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-
-        for(auto &o : objects) {
-          if(o->isDestroyed())
-            objects.erase(std::remove(objects.begin(),
-                                      objects.end(),
-                                      o), objects.end());
-          else
-            o->update(deltaClock.getElapsedTime());
+        // Ctrl-C to quit.
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::C) &&
+           sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+        {
+          window.close();
         }
 
+        //
+        // Debug.
+        //
+        /*
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-          spawnYeezuses(objects, 2, kanyeTexture);
+          for(int i=0; i<1; i++) {
+            Particle *go = new Particle();
+            go->loadSprite(particleTexture);
+            go->setVelocity((rand() % 100) - 50, (rand() % 100) - 50);
+            l.addToQueue(rand() % 20 + 6, go);
+          }
+        }
+        */
+
+        psuedoClear(window, sf::Color(94, 152, 171),
+                   (GSGetTime.asMilliseconds() <= 500) ? 255 : 105);
+
+        if(GSGetTime.asMilliseconds() % 8 == 0 ) {
+          Cloud *c = new Cloud();
+          c->loadSprite(particleTexture);
+          level->addToQueue(rand() % 6 + 5, c);
         }
 
-        // window.clear();
+        GSGetCurrentStage->update(sf::seconds(1.f / GSGetMaxFPS));
+        GSGetCurrentStage->draw(window);
 
-        for(auto &o : objects) {
-          window.draw(*o);
-        }
         window.display();
     }
 
