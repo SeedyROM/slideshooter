@@ -55,10 +55,10 @@ private:
   }
 };
 
-class Level {
+class Stage {
 public:
-  Level() {}
-  virtual ~Level() {
+  Stage() {}
+  virtual ~Stage() {
     for(auto &q : m_subQueues) {
       delete q;
     }
@@ -99,7 +99,7 @@ public:
         (*foundQueue)->addToQueue(gameObject);
       } else {
         m_subQueues.push_back(new RenderSubQueue(depth));
-        m_subQueues.back()->addToQueue(gameObject);
+        m_subQueues.front()->addToQueue(gameObject);
         //std::cout << "Adding a new sub queue..." << std::endl;
       }
     }

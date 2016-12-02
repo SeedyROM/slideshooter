@@ -6,7 +6,7 @@
 #include "GameState.h"
 #include "Player.h"
 #include "Cloud.h"
-#include "Level.h"
+#include "Stage.h"
 
 #include "Misc.h"
 
@@ -24,8 +24,8 @@ int main()
     particleTexture.loadFromFile("cloud.png");
 
     // Debug level.
-    Level *level = new Level();
-    GSSetCurrentLevel(level);
+    Stage *level = new Stage();
+    GSSetCurrentStage(level);
 
     Player *p1 = new Player();
     p1->setTextureRect(sf::IntRect(96*3, 0, 96, 96));
@@ -77,8 +77,8 @@ int main()
           level->addToQueue(rand() % 6 + 5, c);
         }
 
-        GSGetCurrentLevel->update(sf::seconds(1.f / GSGetMaxFPS));
-        GSGetCurrentLevel->draw(window);
+        GSGetCurrentStage->update(sf::seconds(1.f / GSGetMaxFPS));
+        GSGetCurrentStage->draw(window);
 
         window.display();
     }

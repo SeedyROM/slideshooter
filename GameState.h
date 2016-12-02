@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Level.h"
+#include "Stage.h"
 
 class GameState
 {
@@ -28,7 +28,7 @@ public:
   long *frameCount;
   static constexpr float maxFPS = 60.f;
 
-  Level *currentLevel;
+  Stage *currentStage;
 
   void setup(sf::RenderWindow *_window, sf::Clock *_deltaClock,
              sf::Clock *_gameClock) {
@@ -38,8 +38,8 @@ public:
     window->setFramerateLimit(maxFPS);
   }
 
-  void setLevel(Level *level) {
-    currentLevel = level;
+  void setStage(Stage *level) {
+    currentStage = level;
   }
 
   static GameState& getInstance()
@@ -55,6 +55,10 @@ public:
 
 GameState * GameState::pInstance = nullptr;
 
+//
+// Global helper macros.
+//
+
 #define GS GameState::getInstance()
 #define GSInit(width, height, default_title)  \
     sf::RenderWindow window(sf::VideoMode(width, height), default_title); \
@@ -62,8 +66,8 @@ GameState * GameState::pInstance = nullptr;
     sf::Clock gameClock; \
     GSSetup((&window, &deltaClock, &gameClock));
 #define GSSetup(ARGS) GS.setup ARGS
-#define GSSetCurrentLevel(level) GS.setLevel(level)
-#define GSGetCurrentLevel GS.currentLevel
+#define GSSetCurrentStage(level) GS.setStage(level)
+#define GSGetCurrentStage GS.currentStage
 #define GSGetTime GS.gameClock->getElapsedTime()
 #define GSGetWindowSize GS.window->getSize()
 #define GSGetMaxFPS GS.maxFPS
