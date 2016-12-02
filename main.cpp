@@ -22,7 +22,7 @@ int main()
 
     // Test the GameObject.
     sf::Texture particleTexture;
-    particleTexture.loadFromFile("cloud.png");
+    particleTexture.loadFromFile("Resources/Images/cloud.png");
 
     // Debug level.
     Stage *level = new Stage();
@@ -30,7 +30,7 @@ int main()
 
     Player *p1 = new Player();
     p1->setTextureRect(sf::IntRect(96*3, 0, 96, 96));
-    p1->loadSprite("ship.png");
+    p1->loadSprite("Resources/Images/ship.png");
     p1->setScale(0.75, 0.75);
     p1->setPosition(100, GSGetWindowSize.y/2);
     level->addObjectToStage(5, p1);
