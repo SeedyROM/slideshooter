@@ -72,10 +72,12 @@ int main()
         psuedoClear(window, sf::Color(94, 152, 171),
                    (GSGetTime.asMilliseconds() <= 500) ? 255 : 125);
 
-        if(GSGetTime.asMilliseconds() % 1 == 0 ) {
-          Cloud *c = new Cloud();
-          c->loadSprite(particleTexture);
-          level->addObjectToStage(rand() % 5 + 3, c);
+        if(GSGetTime.asMilliseconds() % 4 == 0 ) {
+          for(int i=0; i < 1; i++) {
+            Cloud *c = new Cloud();
+            c->loadSprite(particleTexture);
+            level->addObjectToStage(rand() % 5 + 3, c);
+          }
         }
 
         //GSGetCurrentStage->update(sf::seconds(1.f / GSGetMaxFPS));

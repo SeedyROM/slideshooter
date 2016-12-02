@@ -19,7 +19,7 @@ class GameState
     return *this;
   }
 
-~GameState () {}
+  ~GameState () {}
 
 public:
   sf::RenderWindow *window;
@@ -69,5 +69,6 @@ GameState * GameState::pInstance = nullptr;
 #define GSSetCurrentStage(level) GS.setStage(level)
 #define GSGetCurrentStage GS.currentStage
 #define GSGetTime GS.gameClock->getElapsedTime()
+#define GSGetDeltaTime GS.deltaClock->getElapsedTime()
 #define GSGetWindowSize GS.window->getSize()
 #define GSGetMaxFPS GS.maxFPS
