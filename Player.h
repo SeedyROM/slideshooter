@@ -1,7 +1,7 @@
 #pragma once
 #include <algorithm>
-#include "GameObject.h"
-#include "Misc.h"
+#include "Engine/GameObject.h"
+#include "Engine/Helpers/Misc.h"
 
 class Player : public GameObject {
 public:

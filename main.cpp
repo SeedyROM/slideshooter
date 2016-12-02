@@ -3,13 +3,13 @@
 #include <algorithm>
 #include <SFML/Graphics.hpp>
 
-#include "GameState.h"
+#include "Engine/GameState.h"
+#include "Engine/Stage.h"
 
 #include "Player.h"
 #include "Cloud.h"
-#include "Stage.h"
 
-#include "Misc.h"
+#include "Engine/Helpers/Misc.h"
 
 int main()
 {
