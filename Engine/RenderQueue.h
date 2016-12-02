@@ -7,13 +7,6 @@
 
 #include "GameObject.h"
 
-struct CompareGameObjectDepth : std::binary_function<GameObject*, GameObject*, bool> {
-  bool operator()(GameObject *lhs, GameObject *rhs) const {
-    return lhs->getDepth() > rhs->getDepth();
-  }
-};
-typedef std::priority_queue<GameObject, std::deque<GameObject *>, CompareGameObjectDepth> ObjectDepthPriorityQueue;
-
 class RenderQueue {
 public:
   RenderQueue() {}
@@ -33,7 +26,6 @@ public:
       o->update(sf::seconds(1.f / GSGetMaxFPS)); // FIX THIS
       window.draw(*o);
     }
-    //std::cout << m_depth << ": " << m_objectQueue.size() << std::endl;
   }
 
   void addToQueue(GameObject *gameObject) {
@@ -44,7 +36,6 @@ public:
   void setDepth(int depth) { m_depth = depth; }
 private:
   int m_depth = 0;
-
   std::vector<GameObject *> m_objectQueue;
 };
 

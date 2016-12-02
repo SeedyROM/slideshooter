@@ -68,15 +68,15 @@ int main()
           }
         }
         */
-
+        
         psuedoClear(window, sf::Color(94, 152, 171),
-                   (GSGetTime.asMilliseconds() <= 500) ? 255 : 125);
+                   (GSGetTime.asMilliseconds() <= 500) ? 255 : 160);
 
-        if(GSGetTime.asMilliseconds() % 4 == 0 ) {
+        if(GSGetTime.asMilliseconds() % 8 == 0 ) {
           for(int i=0; i < 1; i++) {
             Cloud *c = new Cloud();
             c->loadSprite(particleTexture);
-            level->addObjectToStage(rand() % 5 + 3, c);
+            level->addObjectToStage(rand() % 4 + 2, c);
           }
         }
 
