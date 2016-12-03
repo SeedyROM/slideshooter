@@ -32,9 +32,7 @@ private:
 
 class Menu {
 public:
-  Menu() {
-    m_itemsIterator = m_items.begin();
-  }
+  Menu() {}
   virtual ~Menu() {}
 
   MenuItem &getSelectedItem() {
@@ -42,6 +40,7 @@ public:
   }
   void addMenuItem(MenuItem &item) {
     m_items.push_back(item);
+    if (m_items.size() <= 1) m_itemsIterator = m_items.begin();
   }
   void activateItem() {
     m_itemsIterator->runAction();

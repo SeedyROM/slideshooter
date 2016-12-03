@@ -39,7 +39,7 @@ int main()
     // Debug Menu
     // Holy fuck this worked on the first try.
     MenuItem i1("Fuck", []() {
-      std::cout << "I've been acted upon!\n";
+      std::cout << "I've been acted upon! : " << GSGetWindowSize.x << std::endl;
     });
     MenuItem i2("Ass", []() {
       std::cout << "I've also been seen!\n";
@@ -47,6 +47,7 @@ int main()
     Menu m;
     m.addMenuItem(i1);
     m.addMenuItem(i2);
+    m.activateItem();
 
     // Game loop...
     while (window.isOpen())
@@ -83,10 +84,10 @@ int main()
         */
 
         psuedoClear(window, sf::Color(94, 152, 171),
-                   (GSGetTime.asMilliseconds() <= 500) ? 255 : 160);
+                   (GSGetTime.asMilliseconds() <= 500) ? 255 : 200);
 
-        if(GSGetTime.asMilliseconds() % 8 == 0 ) {
-          for(int i=0; i < 1; i++) {
+        if(GSGetTime.asMilliseconds() % 10 == 0 ) {
+          for(int i=0; i < 8; i++) {
             Cloud *c = new Cloud();
             c->loadSprite(particleTexture);
             level->addObjectToStage(rand() % 4 + 2, c);
